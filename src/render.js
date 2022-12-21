@@ -25,6 +25,7 @@ const watchedState = onChange(state, (path, value, previousValue) => {
     renderValidInput();
   } else if (watchedState.inputUrl.state === 'invalid') {
     renderErrors();
+    console.log('invalid url');
   }
 });
 
