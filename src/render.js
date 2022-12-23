@@ -1,15 +1,16 @@
 import onChange from 'on-change';
 
-const renderValidInput = () => {
-  const input = document.querySelector('#url-input');
-  const form = document.querySelector('.rss-form');
-  input.style.border = '';
-  form.reset();
-  input.focus();
-};
-const renderErrors = () => {
-  const input = document.querySelector('#url-input');
-  input.style.border = 'thick solid red';
+const render = () => (path, value) => {
+  if (path === 'inputUrl.data.urls') {
+    const input = document.querySelector('#url-input');
+    const form = document.querySelector('.rss-form');
+    input.style.border = '';
+    form.reset();
+    input.focus();
+  } else if (value === 'invalid') {
+    const input = document.querySelector('#url-input');
+    input.style.border = 'thick solid red';
+  }
 };
 const state = {
   inputUrl: {
@@ -20,13 +21,6 @@ const state = {
     errors: [],
   },
 };
-const watchedState = onChange(state, (path, value, previousValue) => {
-  if (watchedState.inputUrl.state === 'valid') {
-    renderValidInput();
-    console.log(watchedState.inputUrl.data.urls);
-  } else if (watchedState.inputUrl.state === 'invalid') {
-    renderErrors();
-  }
-});
+const watchedState = onChange(state, render());
 
 export default watchedState;
