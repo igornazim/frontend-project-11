@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 
-const render = () => (path, value) => {
-  if (path === 'inputUrl.data.urls') {
+const render = (actualState) => (path, value) => {
+  if (value === 'valid') {
     const input = document.querySelector('#url-input');
     const form = document.querySelector('.rss-form');
     input.style.border = '';
@@ -14,13 +14,13 @@ const render = () => (path, value) => {
 };
 const state = {
   inputUrl: {
-    state: 'valid',
+    state: '',
     data: {
       urls: [],
     },
     errors: [],
   },
 };
-const watchedState = onChange(state, render());
+const watchedState = onChange(state, render(state));
 
-export default watchedState;
+export { state, watchedState };

@@ -1,26 +1,25 @@
 import './styles.scss';
 import 'bootstrap';
 import { string } from 'yup';
-import watchedState from './render.js';
+import { state, watchedState } from './render.js';
 
 const app = () => {
   const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const schema = string().url().nullable().notOneOf(watchedState.inputUrl.data.urls);
-    console.log(watchedState.inputUrl.data.urls);
     const formData = new FormData(form);
     const url = formData.get('url');
-    schema.isValid(url)
-      .then((data) => {
-        if (data === true) {
-          watchedState.inputUrl.data.urls.push(url);
-        } else if (data === false) {
-          watchedState.inputUrl.state = 'invalid';
-        }
+    schema.validate(url)
+      .then(() => {
+        watchedState.inputUrl.data.urls.push(url);
+        watchedState.inputUrl.state = 'valid';
+        watchedState.inputUrl.errors = [];
       })
-      .catch((err) => {
-        console.log('error!!!', err);
+      .catch((errors) => {
+        watchedState.inputUrl.errors.push(errors.message);
+        watchedState.inputUrl.state = 'invalid';
+        console.log('error!!!', errors.message);
       });
   });
 };
