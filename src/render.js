@@ -1,6 +1,6 @@
 import onChange from 'on-change';
 
-const render = () => {
+const renderClearForm = () => {
   const p = document.querySelector('.text-danger');
   const input = document.querySelector('#url-input');
   const form = document.querySelector('.rss-form');
@@ -10,19 +10,84 @@ const render = () => {
   input.focus();
 };
 const renderErrors = (watchedState) => {
-  console.log(watchedState.inputUrl.errors);
+  const p = document.querySelector('.text-danger') ?? document.querySelector('.text-success');
   if (watchedState.inputUrl.state === 'invalid') {
     const input = document.querySelector('#url-input');
     input.style.border = 'medium solid red';
   } if (watchedState.inputUrl.errors.notUrl.includes('валидным')) {
-    const p = document.querySelector('.text-danger');
+    p.classList.replace('text-success', 'text-danger');
     p.textContent = '';
     p.textContent = watchedState.inputUrl.errors.notUrl;
   } if (watchedState.inputUrl.errors.double.includes('существует')) {
-    const p = document.querySelector('.text-danger');
+    p.classList.replace('text-success', 'text-danger');
     p.textContent = '';
     p.textContent = watchedState.inputUrl.errors.double;
+  } if (watchedState.inputUrl.errors.notRss.includes('RSS')) {
+    p.classList.replace('text-success', 'text-danger');
+    p.textContent = '';
+    p.textContent = watchedState.inputUrl.errors.notRss;
   }
+};
+const renderFeeds = (watchedState) => {
+  const successText = document.querySelector('.text-danger');
+  successText.classList.replace('text-danger', 'text-success');
+  successText.textContent = watchedState.inputUrl.successMessage;
+  const feeds = document.querySelector('.feeds');
+  const divFeeds = document.createElement('div');
+  divFeeds.classList.add('card', 'border-0');
+  const h2 = document.createElement('h2');
+  h2.classList.add('card-title', 'h4');
+  h2.textContent = 'Фиды';
+  const div2 = document.createElement('div');
+  div2.classList.add('card-body');
+  const ul = document.createElement('ul');
+  ul.classList.add('list-group', 'border-0', 'rounded-0');
+  const li = document.createElement('li');
+  li.classList.add('list-group-item', 'border-0', 'border-end-0');
+  const h3 = document.createElement('h3');
+  h3.classList.add('h6', 'm-0');
+  h3.textContent = watchedState.feeds[0].feedName;
+  const p = document.createElement('p');
+  p.classList.add('m-0', 'small', 'text-black-50');
+  p.textContent = watchedState.feeds[0].feedDeskr;
+  feeds.append(divFeeds);
+  divFeeds.append(div2);
+  divFeeds.append(ul);
+  div2.append(h2);
+  ul.append(li);
+  li.append(h3);
+  h3.append(p);
+};
+const renderPosts = (watchedState) => {
+  const posts = document.querySelector('.posts');
+  const divPosts = document.createElement('div');
+  divPosts.classList.add('card', 'border-0');
+  const innerDiv = document.createElement('div');
+  innerDiv.classList.add('card-body');
+  const h2 = document.createElement('h2');
+  h2.classList.add('card-title', 'h4');
+  h2.textContent = 'Посты';
+  posts.append(divPosts);
+  divPosts.append(innerDiv);
+  innerDiv.append(h2);
+  const ul = document.createElement('ul');
+  ul.classList.add('list-group', 'border-0', 'rounded-0');
+  const newPosts = watchedState.posts.map((elem) => {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    ul.append(li);
+    const a = document.createElement('a');
+    a.classList.add('fw-bold');
+    a.setAttribute('href', `${elem.postLink}`);
+    a.setAttribute('target', 'blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+    a.dataset.id = elem.id;
+    a.textContent = elem.postTitle;
+    li.append(a);
+    return li;
+  });
+  divPosts.append(ul);
+  return newPosts;
 };
 const state = {
   inputUrl: {
@@ -33,23 +98,34 @@ const state = {
     errors: {
       double: '',
       notUrl: '',
+      notRss: '',
     },
+    successMessage: '',
   },
+  feeds: [],
+  posts: [],
 };
 const watchedState = onChange(state, (path, value) => {
   switch (value) {
     case 'valid':
-      render(watchedState);
+      renderClearForm(watchedState);
       break;
 
     case 'invalid':
     case 'RSS уже существует':
     case 'Ссылка должна быть валидным URL':
+    case 'Ресурс не является валидным RSS':
       renderErrors(watchedState);
       break;
 
     default:
       break;
+  }
+  if (path === 'feeds') {
+    renderFeeds(watchedState);
+  }
+  if (path === 'posts') {
+    renderPosts(watchedState);
   }
 });
 
