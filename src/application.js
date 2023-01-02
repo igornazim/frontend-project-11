@@ -43,9 +43,9 @@ const app = () => {
         });
         watchedState.inputUrl.state = 'valid';
         watchedState.inputUrl.successMessage = i18nextInstance.t('success.rssLoaded');
-        watchedState.feeds.push(feed);
-        watchedState.posts = mappedItems;
-        watchedState.inputUrl.data.urls.push(validUrl);
+        watchedState.feeds = [feed, ...watchedState.feeds];
+        watchedState.posts = [...mappedItems, ...watchedState.posts];
+        watchedState.inputUrl.data.urls = [...watchedState.inputUrl.data.urls, validUrl];
         watchedState.inputUrl.errors.double = '';
         watchedState.inputUrl.errors.inputUrl = '';
       })

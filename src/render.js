@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 
 const renderClearForm = () => {
-  const p = document.querySelector('.text-danger');
+  const p = document.querySelector('.text-danger') ?? document.querySelector('.text-success');
   const input = document.querySelector('#url-input');
   const form = document.querySelector('.rss-form');
   input.style.border = '';
@@ -14,25 +14,21 @@ const renderErrors = (watchedState) => {
   if (watchedState.inputUrl.state === 'invalid') {
     const input = document.querySelector('#url-input');
     input.style.border = 'medium solid red';
-  } if (watchedState.inputUrl.errors.notUrl.includes('валидным')) {
-    p.classList.replace('text-success', 'text-danger');
     p.textContent = '';
+    p.classList.replace('text-success', 'text-danger');
+  } if (watchedState.inputUrl.errors.notUrl.match(/валидным/)) {
     p.textContent = watchedState.inputUrl.errors.notUrl;
-  } if (watchedState.inputUrl.errors.double.includes('существует')) {
-    p.classList.replace('text-success', 'text-danger');
-    p.textContent = '';
+  } if (watchedState.inputUrl.errors.double.match(/существует/)) {
     p.textContent = watchedState.inputUrl.errors.double;
-  } if (watchedState.inputUrl.errors.notRss.includes('RSS')) {
-    p.classList.replace('text-success', 'text-danger');
-    p.textContent = '';
+  } if (watchedState.inputUrl.errors.notRss.match(/RSS/)) {
     p.textContent = watchedState.inputUrl.errors.notRss;
   }
 };
 const renderFeeds = (watchedState) => {
-  const successText = document.querySelector('.text-danger');
-  successText.classList.replace('text-danger', 'text-success');
+  const successText = document.querySelector('.text-danger') ?? document.querySelector('.text-success');
+  successText.classList.replace('text-danger', 'text-success'); // следить, чтобы было ок
   successText.textContent = watchedState.inputUrl.successMessage;
-  const feeds = document.querySelector('.feeds');
+  const containerFeeds = document.querySelector('.feeds');
   const divFeeds = document.createElement('div');
   divFeeds.classList.add('card', 'border-0');
   const h2 = document.createElement('h2');
@@ -42,24 +38,28 @@ const renderFeeds = (watchedState) => {
   div2.classList.add('card-body');
   const ul = document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
-  const li = document.createElement('li');
-  li.classList.add('list-group-item', 'border-0', 'border-end-0');
-  const h3 = document.createElement('h3');
-  h3.classList.add('h6', 'm-0');
-  h3.textContent = watchedState.feeds[0].feedName;
-  const p = document.createElement('p');
-  p.classList.add('m-0', 'small', 'text-black-50');
-  p.textContent = watchedState.feeds[0].feedDeskr;
-  feeds.append(divFeeds);
+  watchedState.feeds.forEach((feed) => {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'border-0', 'border-end-0');
+    const h3 = document.createElement('h3');
+    h3.classList.add('h6', 'm-0');
+    h3.textContent = feed.feedName;
+    const p = document.createElement('p');
+    p.classList.add('m-0', 'small', 'text-black-50');
+    p.textContent = feed.feedDeskr;
+    li.append(h3);
+    h3.append(p);
+    ul.append(li);
+  });
+  containerFeeds.innerHTML = '';
+  containerFeeds.append(divFeeds);
   divFeeds.append(div2);
   divFeeds.append(ul);
   div2.append(h2);
-  ul.append(li);
-  li.append(h3);
-  h3.append(p);
 };
 const renderPosts = (watchedState) => {
-  const posts = document.querySelector('.posts');
+  const containerPosts = document.querySelector('.posts');
+  containerPosts.innerHTML = '';
   const divPosts = document.createElement('div');
   divPosts.classList.add('card', 'border-0');
   const innerDiv = document.createElement('div');
@@ -67,7 +67,7 @@ const renderPosts = (watchedState) => {
   const h2 = document.createElement('h2');
   h2.classList.add('card-title', 'h4');
   h2.textContent = 'Посты';
-  posts.append(divPosts);
+  containerPosts.append(divPosts);
   divPosts.append(innerDiv);
   innerDiv.append(h2);
   const ul = document.createElement('ul');
@@ -121,11 +121,18 @@ const watchedState = onChange(state, (path, value) => {
     default:
       break;
   }
-  if (path === 'feeds') {
-    renderFeeds(watchedState);
-  }
-  if (path === 'posts') {
-    renderPosts(watchedState);
+  switch (path) {
+    case 'feeds':
+      renderClearForm();
+      renderFeeds(watchedState);
+      break;
+
+    case 'posts':
+      renderPosts(watchedState);
+      break;
+
+    default:
+      break;
   }
 });
 
