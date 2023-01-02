@@ -114,7 +114,7 @@ const watchedState = onChange(state, (path, value) => {
     case 'invalid':
     case 'RSS уже существует':
     case 'Ссылка должна быть валидным URL':
-    case 'Ресурс не является валидным RSS':
+    case 'Ресурс не содержит валидный RSS':
       renderErrors(watchedState);
       break;
 

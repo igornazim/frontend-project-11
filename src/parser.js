@@ -7,7 +7,7 @@ const getFlowData = (url) => axios.get(`https://allorigins.hexlet.app/get?disabl
     }
     const parser = new DOMParser();
     const doc = parser.parseFromString(response.data.contents, 'text/html');
-    return doc;
+    return [doc, url];
   });
 
 export default getFlowData;

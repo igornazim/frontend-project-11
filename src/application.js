@@ -22,45 +22,40 @@ const app = () => {
     const formData = new FormData(form);
     const url = formData.get('url');
     schema.validate(url)
-      .then((validUrl) => {
-        getFlowData(validUrl)
-          .then((doc) => {
-            const feedName = doc.querySelector('title').textContent;
-            const feedDeskr = doc.querySelector('description').textContent;
-            const feed = { id: Math.floor(Math.random() * 100), feedName, feedDeskr };
-            const items = doc.querySelectorAll('item');
-            const arrItems = Array.from(items);
-            const mappedItems = arrItems.map((item) => {
-              const postTitle = item.querySelector('title').textContent;
-              const postLink = item.querySelector('link').nextSibling.textContent.trim();
-              const post = {
-                id: Math.floor(Math.random() * 100),
-                listId: feed.id,
-                postTitle,
-                postLink,
-              };
-              return post;
-            });
-            watchedState.inputUrl.successMessage = i18nextInstance.t('success.rssLoaded');
-            watchedState.feeds.push(feed);
-            watchedState.posts = mappedItems;
-          })
-          .catch((errors) => {
-            if (errors.message.match(/Not RSS/)) {
-              watchedState.inputUrl.errors.double = '';
-              watchedState.inputUrl.errors.notUrl = '';
-              watchedState.inputUrl.errors.notRss = i18nextInstance.t('errors.errNotRss');
-              console.log(watchedState.inputUrl.errors.notRss);
-            }
-          });
-        watchedState.inputUrl.data.urls.push(validUrl);
+      .then((validUrl) => getFlowData(validUrl))
+      .then((data) => {
+        const [doc, validUrl] = data;
+        const feedName = doc.querySelector('title').textContent;
+        const feedDeskr = doc.querySelector('description').textContent;
+        const feed = { id: Math.floor(Math.random() * 100), feedName, feedDeskr };
+        const items = doc.querySelectorAll('item');
+        const arrItems = Array.from(items);
+        const mappedItems = arrItems.map((item) => {
+          const postTitle = item.querySelector('title').textContent;
+          const postLink = item.querySelector('link').nextSibling.textContent.trim();
+          const post = {
+            id: Math.floor(Math.random() * 100),
+            listId: feed.id,
+            postTitle,
+            postLink,
+          };
+          return post;
+        });
         watchedState.inputUrl.state = 'valid';
+        watchedState.inputUrl.successMessage = i18nextInstance.t('success.rssLoaded');
+        watchedState.feeds.push(feed);
+        watchedState.posts = mappedItems;
+        watchedState.inputUrl.data.urls.push(validUrl);
         watchedState.inputUrl.errors.double = '';
         watchedState.inputUrl.errors.inputUrl = '';
       })
       .catch((errors) => {
         watchedState.inputUrl.state = 'invalid';
-        if (errors.message.match(/this must not be one of the following values/)) {
+        if (errors.message.match(/Not RSS/)) {
+          watchedState.inputUrl.errors.double = '';
+          watchedState.inputUrl.errors.notUrl = '';
+          watchedState.inputUrl.errors.notRss = i18nextInstance.t('errors.errNotRss');
+        } else if (errors.message.match(/this must not be one of the following values/)) {
           watchedState.inputUrl.errors.notUrl = '';
           watchedState.inputUrl.errors.notRss = '';
           watchedState.inputUrl.errors.double = i18nextInstance.t('errors.errDoubleUrl');

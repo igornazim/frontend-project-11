@@ -4,7 +4,7 @@ export default {
       errors: {
         errDoubleUrl: 'RSS уже существует',
         errNotUrl: 'Ссылка должна быть валидным URL',
-        errNotRss: 'Ресурс не является валидным RSS',
+        errNotRss: 'Ресурс не содержит валидный RSS',
       },
       success: {
         rssLoaded: 'Ресурс успешно загружен',
