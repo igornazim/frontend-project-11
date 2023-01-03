@@ -67,6 +67,47 @@ const app = () => {
         console.log('error!!!', errors.message);
       });
   });
+  const updatePosts = (state) => { // обновление постов
+    const handler = (counter = 0) => {
+      if (state.inputUrl.data.urls.length > 0) {
+        state.inputUrl.data.urls.forEach((url) => {
+          getFlowData(url)
+            .then((data) => {
+              const [doc] = data;
+              const feedName = doc.querySelector('title').textContent;
+              const feedDeskr = doc.querySelector('description').textContent;
+              const feed = { id: Math.floor(Math.random() * 100), feedName, feedDeskr };
+              const items = doc.querySelectorAll('item');
+              const arrItems = Array.from(items);
+              const mappedItems = arrItems.map((item) => {
+                const postTitle = item.querySelector('title').textContent;
+                if (!watchedState.posts.includes(postTitle)) {
+                  const postLink = item.querySelector('link').nextSibling.textContent.trim();
+                  const post = {
+                    id: Math.floor(Math.random() * 100),
+                    listId: feed.id,
+                    postTitle,
+                    postLink,
+                  };
+                  return post;
+                }
+                return postTitle;
+              });
+              watchedState.posts = [...mappedItems, ...watchedState.posts];
+              watchedState.inputUrl.errors.double = '';
+              watchedState.inputUrl.errors.inputUrl = '';
+            })
+            .catch((errors) => {
+              console.log('error!!!', errors.message);
+            });
+        });
+      }
+      // console.log('posts updated!'); //
+      setTimeout(() => handler(counter + 1), 5000);
+    };
+    handler();
+  };
+  updatePosts(watchedState);
 };
 
 export default app;
