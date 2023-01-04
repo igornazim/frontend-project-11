@@ -27,7 +27,9 @@ const app = () => {
         const [doc, validUrl] = data;
         const feedName = doc.querySelector('title').textContent;
         const feedDeskr = doc.querySelector('description').textContent;
-        const feed = { id: Math.floor(Math.random() * 100), feedName, feedDeskr };
+        const feed = {
+          id: Math.floor(Math.random() * 100), feedName, feedDeskr, feedUrl: validUrl,
+        };
         const items = doc.querySelectorAll('item');
         const arrItems = Array.from(items);
         const mappedItems = arrItems.map((item) => {
@@ -67,42 +69,46 @@ const app = () => {
         console.log('error!!!', errors.message);
       });
   });
+
   const updatePosts = (state) => { // обновление постов
     const handler = (counter = 0) => {
       if (state.inputUrl.data.urls.length > 0) {
         state.inputUrl.data.urls.forEach((url) => {
           getFlowData(url)
             .then((data) => {
-              const [doc] = data;
-              const feedName = doc.querySelector('title').textContent;
-              const feedDeskr = doc.querySelector('description').textContent;
-              const feed = { id: Math.floor(Math.random() * 100), feedName, feedDeskr };
+              const [doc, validUrl] = data;
               const items = doc.querySelectorAll('item');
               const arrItems = Array.from(items);
+              const postHeadlines = watchedState.posts.map((post) => post.postTitle);
               const mappedItems = arrItems.map((item) => {
                 const postTitle = item.querySelector('title').textContent;
-                if (!watchedState.posts.includes(postTitle)) {
+                if (!postHeadlines.includes(postTitle)) {
+                  const actualFeed = watchedState.feeds.filter((feed) => feed.feedUrl === validUrl);
+                  const [feed] = actualFeed;
+                  const actualFeedId = feed.id;
                   const postLink = item.querySelector('link').nextSibling.textContent.trim();
                   const post = {
                     id: Math.floor(Math.random() * 100),
-                    listId: feed.id,
+                    listId: actualFeedId,
                     postTitle,
                     postLink,
                   };
                   return post;
                 }
-                return postTitle;
+                return null;
               });
-              watchedState.posts = [...mappedItems, ...watchedState.posts];
-              watchedState.inputUrl.errors.double = '';
-              watchedState.inputUrl.errors.inputUrl = '';
+              const newPosts = mappedItems.filter((elem) => elem !== null);
+              if (newPosts.length > 0) {
+                watchedState.posts = [...newPosts, ...watchedState.posts];
+                watchedState.inputUrl.errors.double = '';
+                watchedState.inputUrl.errors.inputUrl = '';
+              }
             })
             .catch((errors) => {
               console.log('error!!!', errors.message);
             });
         });
       }
-      // console.log('posts updated!'); //
       setTimeout(() => handler(counter + 1), 5000);
     };
     handler();

@@ -9,6 +9,7 @@ const renderClearForm = () => {
   form.reset();
   input.focus();
 };
+
 const renderErrors = (watchedState) => {
   const p = document.querySelector('.text-danger') ?? document.querySelector('.text-success');
   if (watchedState.inputUrl.state === 'invalid') {
@@ -24,6 +25,7 @@ const renderErrors = (watchedState) => {
     p.textContent = watchedState.inputUrl.errors.notRss;
   }
 };
+
 const renderFeeds = (watchedState) => {
   const successText = document.querySelector('.text-danger') ?? document.querySelector('.text-success');
   successText.classList.replace('text-danger', 'text-success'); // следить, чтобы было ок
@@ -57,6 +59,17 @@ const renderFeeds = (watchedState) => {
   divFeeds.append(ul);
   div2.append(h2);
 };
+
+const buildButton = () => {
+  const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+  button.dataset.bsToggle = 'modal';
+  button.dataset.bsTarget = '#exampleModal';
+  button.textContent = 'Просмотр';
+  return button;
+};
+
 const renderPosts = (watchedState) => {
   const containerPosts = document.querySelector('.posts');
   containerPosts.innerHTML = '';
@@ -83,12 +96,15 @@ const renderPosts = (watchedState) => {
     a.setAttribute('rel', 'noopener noreferrer');
     a.dataset.id = elem.id;
     a.textContent = elem.postTitle;
+    const button = buildButton();
     li.append(a);
+    li.append(button);
     return li;
   });
   divPosts.append(ul);
   return newPosts;
 };
+
 const state = {
   inputUrl: {
     state: '',
@@ -105,6 +121,7 @@ const state = {
   feeds: [],
   posts: [],
 };
+
 const watchedState = onChange(state, (path, value) => {
   switch (value) {
     case 'valid':
