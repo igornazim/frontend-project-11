@@ -74,7 +74,7 @@ const buildButton = (watchedState) => {
     const currentPostId = Number(a.dataset.id);
     const currentPostData = watchedState.posts.filter((elem) => elem.id === currentPostId);
     const currentPostTitle = currentPostData[0].postTitle;
-    const currentPostDescription = currentPostData[0].postDescription;
+    const currentPostDescription = currentPostData[0].postDescription.trim();
     const currentPostLink = currentPostData[0].postLink;
     const popup = document.querySelector('.modal');
     const popupTitle = document.querySelector('.modal-title');
