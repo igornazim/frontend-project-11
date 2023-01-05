@@ -77,13 +77,13 @@ const buildButton = (watchedState) => {
     const currentPostDescription = currentPostData[0].postDescription.trim();
     const currentPostLink = currentPostData[0].postLink;
     const popup = document.querySelector('.modal');
+    popup.classList.add('show');
     const popupTitle = document.querySelector('.modal-title');
     popupTitle.textContent = currentPostTitle;
     const popupDescription = document.querySelector('.modal-body');
     popupDescription.textContent = currentPostDescription.trim();
     const postLink = document.querySelector('.full-article');
     postLink.setAttribute('href', currentPostLink);
-    popup.classList.add('show');
     a.classList.replace('fw-bold', 'fw-normal');
     a.classList.add('link-secondary');
   });
