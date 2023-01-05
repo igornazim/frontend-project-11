@@ -34,12 +34,14 @@ const app = () => {
         const arrItems = Array.from(items);
         const mappedItems = arrItems.map((item) => {
           const postTitle = item.querySelector('title').textContent;
-          const postLink = item.querySelector('link').nextSibling.textContent.trim();
+          const postLink = item.querySelector('link').textContent;
+          const postDescription = item.querySelector('description').textContent;
           const post = {
-            id: Math.floor(Math.random() * 100),
+            id: Math.floor(Math.random() * 10000),
             listId: feed.id,
             postTitle,
             postLink,
+            postDescription,
           };
           return post;
         });
@@ -53,7 +55,11 @@ const app = () => {
       })
       .catch((errors) => {
         watchedState.inputUrl.state = 'invalid';
-        if (errors.message.match(/Not RSS/)) {
+        if (errors.message.match(/Network error/)) {
+          watchedState.inputUrl.errors.double = '';
+          watchedState.inputUrl.errors.notUrl = '';
+          watchedState.inputUrl.errors.notRss = i18nextInstance.t('errors.errNetworkError');
+        } else if (errors.message.match(/Not RSS/)) {
           watchedState.inputUrl.errors.double = '';
           watchedState.inputUrl.errors.notUrl = '';
           watchedState.inputUrl.errors.notRss = i18nextInstance.t('errors.errNotRss');
@@ -87,11 +93,13 @@ const app = () => {
                   const [feed] = actualFeed;
                   const actualFeedId = feed.id;
                   const postLink = item.querySelector('link').nextSibling.textContent.trim();
+                  const postDescription = item.querySelector('description').textContent;
                   const post = {
-                    id: Math.floor(Math.random() * 100),
+                    id: Math.floor(Math.random() * 10000),
                     listId: actualFeedId,
                     postTitle,
                     postLink,
+                    postDescription,
                   };
                   return post;
                 }
