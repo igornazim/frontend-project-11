@@ -92,8 +92,8 @@ const app = () => {
                   const actualFeed = watchedState.feeds.filter((feed) => feed.feedUrl === validUrl);
                   const [feed] = actualFeed;
                   const actualFeedId = feed.id;
-                  const postLink = item.querySelector('link').nextSibling.textContent.trim();
-                  const postDescription = item.querySelector('description').textContent;
+                  const postLink = item.querySelector('link');
+                  const postDescription = item.querySelector('description').textContent.trim();
                   const post = {
                     id: Math.floor(Math.random() * 10000),
                     listId: actualFeedId,

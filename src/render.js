@@ -80,7 +80,7 @@ const buildButton = (watchedState) => {
     const popupTitle = document.querySelector('.modal-title');
     popupTitle.textContent = currentPostTitle;
     const popupDescription = document.querySelector('.modal-body');
-    popupDescription.textContent = currentPostDescription;
+    popupDescription.textContent = currentPostDescription.trim();
     const postLink = document.querySelector('.full-article');
     postLink.setAttribute('href', currentPostLink);
     popup.classList.add('show');
