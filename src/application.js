@@ -55,10 +55,10 @@ const app = () => {
       })
       .catch((errors) => {
         watchedState.inputUrl.state = 'invalid';
-        if (errors.message.match(/Network error/)) {
+        if (errors.message.match(/Network Error/)) {
           watchedState.inputUrl.errors.double = '';
           watchedState.inputUrl.errors.notUrl = '';
-          watchedState.inputUrl.errors.notRss = i18nextInstance.t('errors.errNetworkError');
+          watchedState.inputUrl.errors.networkError = i18nextInstance.t('errors.errNetworkError');
         } else if (errors.message.match(/Not RSS/)) {
           watchedState.inputUrl.errors.double = '';
           watchedState.inputUrl.errors.notUrl = '';
@@ -113,6 +113,12 @@ const app = () => {
               }
             })
             .catch((errors) => {
+              watchedState.inputUrl.state = 'invalid';
+              if (errors.message.match(/Network Error/)) {
+                watchedState.inputUrl.errors.double = '';
+                watchedState.inputUrl.errors.notUrl = '';
+                watchedState.inputUrl.errors.networkError = i18nextInstance.t('errors.errNetworkError');
+              }
               console.log('error!!!', errors.message);
             });
         });

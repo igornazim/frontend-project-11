@@ -23,6 +23,8 @@ const renderErrors = (watchedState) => {
     p.textContent = watchedState.inputUrl.errors.double;
   } if (watchedState.inputUrl.errors.notRss.match(/RSS/)) {
     p.textContent = watchedState.inputUrl.errors.notRss;
+  } if (watchedState.inputUrl.errors.networkError.match(/сети/)) {
+    p.textContent = watchedState.inputUrl.errors.networkError;
   }
 };
 
@@ -137,6 +139,7 @@ const state = {
       double: '',
       notUrl: '',
       notRss: '',
+      networkError: '',
     },
     successMessage: '',
   },
@@ -159,6 +162,7 @@ const watchedState = onChange(state, (path, value) => {
     case 'RSS уже существует':
     case 'Ссылка должна быть валидным URL':
     case 'Ресурс не содержит валидный RSS':
+    case 'Ошибка сети':
       renderErrors(watchedState);
       break;
 
