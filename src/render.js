@@ -62,13 +62,31 @@ const renderFeeds = (watchedState) => {
   div2.append(h2);
 };
 
-const buildButton = () => {
+const buildButton = (watchedState) => {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
   button.dataset.bsToggle = 'modal';
   button.dataset.bsTarget = '#modal';
   button.textContent = 'Просмотр';
+  button.addEventListener('click', (e) => {
+    const a = e.target.previousSibling;
+    const currentPostId = Number(a.dataset.id);
+    const currentPostData = watchedState.posts.filter((elem) => elem.id === currentPostId);
+    const currentPostTitle = currentPostData[0].postTitle;
+    const currentPostDescription = currentPostData[0].postDescription.trim();
+    const currentPostLink = currentPostData[0].postLink;
+    const popup = document.querySelector('.modal');
+    const popupTitle = document.querySelector('.modal-title');
+    popupTitle.textContent = currentPostTitle;
+    const popupDescription = document.querySelector('.modal-body');
+    popupDescription.textContent = currentPostDescription.trim();
+    const postLink = document.querySelector('.full-article');
+    postLink.setAttribute('href', currentPostLink);
+    popup.classList.add('show');
+    a.classList.replace('fw-bold', 'fw-normal');
+    a.classList.add('link-secondary');
+  });
   return button;
 };
 
@@ -102,7 +120,7 @@ const renderPosts = (watchedState) => {
       a.classList.replace('fw-bold', 'fw-normal');
       a.classList.add('link-secondary');
     });
-    const button = buildButton();
+    const button = buildButton(watchedState);
     li.append(a);
     li.append(button);
     return li;
