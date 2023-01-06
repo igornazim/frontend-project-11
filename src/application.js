@@ -53,6 +53,29 @@ const app = () => {
         watchedState.inputUrl.errors.double = '';
         watchedState.inputUrl.errors.inputUrl = '';
       })
+      .then(() => {
+        const buttons = Array.from(document.querySelectorAll('.btn-outline-primary'));
+        buttons.forEach((button) => {
+          button.addEventListener('click', (el) => {
+            const a = el.target.previousSibling;
+            const currentPostId = Number(a.dataset.id);
+            const currentPostData = watchedState.posts.filter((elem) => elem.id === currentPostId);
+            const currentPostTitle = currentPostData[0].postTitle;
+            const currentPostDescription = currentPostData[0].postDescription.trim();
+            const currentPostLink = currentPostData[0].postLink;
+            const popup = document.querySelector('.modal');
+            const popupTitle = document.querySelector('.modal-title');
+            popupTitle.textContent = currentPostTitle;
+            const popupDescription = document.querySelector('.modal-body');
+            popupDescription.textContent = currentPostDescription.trim();
+            const postLink = document.querySelector('.full-article');
+            postLink.setAttribute('href', currentPostLink);
+            popup.classList.add('show');
+            a.classList.replace('fw-bold', 'fw-normal');
+            a.classList.add('link-secondary');
+          });
+        });
+      })
       .catch((errors) => {
         watchedState.inputUrl.state = 'invalid';
         if (errors.message.match(/Network Error/)) {
@@ -111,6 +134,29 @@ const app = () => {
                 watchedState.inputUrl.errors.double = '';
                 watchedState.inputUrl.errors.inputUrl = '';
               }
+            })
+            .then(() => {
+              const buttons = Array.from(document.querySelectorAll('.btn-outline-primary'));
+              buttons.forEach((button) => {
+                button.addEventListener('click', (el) => {
+                  const a = el.target.previousSibling;
+                  const currentPostId = Number(a.dataset.id);
+                  const postData = watchedState.posts.filter((elem) => elem.id === currentPostId);
+                  const currentPostTitle = postData[0].postTitle;
+                  const currentPostDescription = postData[0].postDescription.trim();
+                  const currentPostLink = postData[0].postLink;
+                  const popup = document.querySelector('.modal');
+                  const popupTitle = document.querySelector('.modal-title');
+                  popupTitle.textContent = currentPostTitle;
+                  const popupDescription = document.querySelector('.modal-body');
+                  popupDescription.textContent = currentPostDescription.trim();
+                  const postLink = document.querySelector('.full-article');
+                  postLink.setAttribute('href', currentPostLink);
+                  popup.classList.add('show');
+                  a.classList.replace('fw-bold', 'fw-normal');
+                  a.classList.add('link-secondary');
+                });
+              });
             })
             .catch((errors) => {
               watchedState.inputUrl.state = 'invalid';
