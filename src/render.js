@@ -64,6 +64,9 @@ const renderFeeds = (watchedState) => {
 
 const buildButton = (watchedState) => {
   const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+  button.textContent = 'Просмотр';
   button.addEventListener('click', (e) => {
     const a = e.target.previousSibling;
     const currentPostId = Number(a.dataset.id);
@@ -81,12 +84,9 @@ const buildButton = (watchedState) => {
     popup.classList.add('show');
     a.classList.replace('fw-bold', 'fw-normal');
     a.classList.add('link-secondary');
+    button.dataset.bsToggle = 'modal';
+    button.dataset.bsTarget = '#modal';
   });
-  button.setAttribute('type', 'button');
-  button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-  button.dataset.bsToggle = 'modal';
-  button.dataset.bsTarget = '#modal';
-  button.textContent = 'Просмотр';
   return button;
 };
 
