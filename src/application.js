@@ -50,7 +50,6 @@ const app = () => {
         watchedState.inputUrl.data.urls = [...watchedState.inputUrl.data.urls, validUrl];
         watchedState.inputUrl.errors.double = '';
         watchedState.inputUrl.errors.inputUrl = '';
-        watchedState.uiState = 'visible';
       })
       .catch((errors) => {
         watchedState.inputUrl.state = 'invalid';
