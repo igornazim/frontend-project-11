@@ -51,6 +51,15 @@ const app = () => {
         watchedState.inputUrl.errors.double = '';
         watchedState.inputUrl.errors.inputUrl = '';
       })
+      .then(() => {
+        const buttons = document.querySelectorAll('.btn-outline-primary');
+        buttons.forEach((button) => {
+          button.addEventListener('click', (el) => {
+            const element = el.target.previousSibling;
+            watchedState.uiState = element.dataset.id;
+          });
+        });
+      })
       .catch((errors) => {
         watchedState.inputUrl.state = 'invalid';
         if (errors.message.match(/Network Error/)) {
@@ -109,6 +118,15 @@ const app = () => {
                 watchedState.inputUrl.errors.double = '';
                 watchedState.inputUrl.errors.inputUrl = '';
               }
+            })
+            .then(() => {
+              const buttons = document.querySelectorAll('.btn-outline-primary');
+              buttons.forEach((button) => {
+                button.addEventListener('click', (el) => {
+                  const element = el.target.previousSibling;
+                  watchedState.uiState = element.dataset.id;
+                });
+              });
             })
             .catch((errors) => {
               watchedState.inputUrl.state = 'invalid';
