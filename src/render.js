@@ -72,21 +72,19 @@ const buildButton = () => {
   return button;
 };
 
-const showModal = (watchedState) => {
+const addTextInModal = (watchedState) => {
   const postId = watchedState.uiState;
   const a = document.querySelector(`a[data-id="${postId}"]`);
   const currentPostData = watchedState.posts.filter((elem) => elem.id === Number(postId));
   const currentPostTitle = currentPostData[0].postTitle;
   const currentPostDescription = currentPostData[0].postDescription;
   const currentPostLink = currentPostData[0].postLink;
-  const popup = document.querySelector('.modal');
   const popupTitle = document.querySelector('.modal-title');
   popupTitle.textContent = currentPostTitle;
   const popupDescription = document.querySelector('.modal-body');
   popupDescription.textContent = currentPostDescription;
   const postLink = document.querySelector('.full-article');
   postLink.setAttribute('href', currentPostLink);
-  popup.classList.add('show');
   a.classList.replace('fw-bold', 'fw-normal');
   a.classList.add('link-secondary');
 };
@@ -177,7 +175,7 @@ const watchedState = onChange(state, (path, value) => {
       break;
 
     case 'uiState':
-      showModal(watchedState);
+      addTextInModal(watchedState);
       break;
 
     default:
